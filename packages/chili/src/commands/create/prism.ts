@@ -41,6 +41,7 @@ export class Prism extends CreateCommand {
         return [
             new SelectShapeStep(ShapeType.Face | ShapeType.Edge | ShapeType.Wire, "prompt.select.shape", {
                 multiple: true,
+                keepSelection: true,
             }),
             new LengthAtAxisStep("prompt.pickNextPoint", this.getLengthStepData, true),
         ];
