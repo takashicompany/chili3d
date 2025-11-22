@@ -151,6 +151,7 @@ export default {
         "error.input.threeNumberCanBeInput": "Reference point is empty, only 3 numbers can be entered",
         "error.input.unsupportedInputs": "Exceeds the maximum number of inputs",
         "error.import.unsupportedFileType:{0}": "Unsupported file type: {0}",
+        "error.import.failed": "Import Failed",
         "error.export.noNodeCanBeExported": "No node can be exported",
         "file.format": "Format",
         "home.recent": "Recent",

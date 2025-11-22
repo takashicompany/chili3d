@@ -1,7 +1,7 @@
 // Part of the Chili3d Project, under the AGPL-3.0 License.
 // See LICENSE file in the project root for full license information.
 
-import { button, div } from "chili-controls";
+import { button, div, textarea } from "chili-controls";
 import { DialogResult, I18n, I18nKeys } from "chili-core";
 import style from "./dialog.module.css";
 
@@ -31,6 +31,56 @@ export class Dialog {
                         onclick: () => {
                             dialog.remove();
                             callback?.(DialogResult.cancel);
+                        },
+                    }),
+                ),
+            ),
+        );
+
+        dialog.showModal();
+    }
+
+    static showError(title: I18nKeys, errorMessage: string) {
+        const dialog = document.createElement("dialog");
+        document.body.appendChild(dialog);
+
+        const errorTextarea = textarea({
+            value: errorMessage,
+            readOnly: true,
+            style: "width: 100%; height: 300px; font-family: monospace; font-size: 12px; resize: vertical;",
+        });
+
+        const copyButton = button({
+            textContent: "Copy to Clipboard",
+            onclick: async () => {
+                try {
+                    await navigator.clipboard.writeText(errorMessage);
+                    copyButton.textContent = "Copied!";
+                    setTimeout(() => {
+                        copyButton.textContent = "Copy to Clipboard";
+                    }, 2000);
+                } catch (err) {
+                    console.error("Failed to copy:", err);
+                    copyButton.textContent = "Copy failed";
+                    setTimeout(() => {
+                        copyButton.textContent = "Copy to Clipboard";
+                    }, 2000);
+                }
+            },
+        });
+
+        dialog.appendChild(
+            div(
+                { className: style.root },
+                div({ className: style.title }, I18n.translate(title) ?? "Error"),
+                div({ className: style.content }, errorTextarea),
+                div(
+                    { className: style.buttons },
+                    copyButton,
+                    button({
+                        textContent: I18n.translate("common.confirm"),
+                        onclick: () => {
+                            dialog.remove();
                         },
                     }),
                 ),

@@ -146,6 +146,7 @@ const I18N_KEYS = [
     "error.input.threeNumberCanBeInput",
     "error.input.unsupportedInputs",
     "error.import.unsupportedFileType:{0}",
+    "error.import.failed",
     "error.export.noNodeCanBeExported",
     "file.format",
     "home.recent",
