@@ -13,10 +13,11 @@ import {
     ShapeNode,
     VisualNode,
 } from "chili-core";
+import { SVGConverter } from "./svgConverter";
 
 export class DefaultDataExchange implements IDataExchange {
     importFormats(): string[] {
-        return [".step", ".stp", ".iges", ".igs", ".brep", ".stl"];
+        return [".step", ".stp", ".iges", ".igs", ".brep", ".stl", ".svg"];
     }
 
     exportFormats(): string[] {
@@ -41,6 +42,8 @@ export class DefaultDataExchange implements IDataExchange {
             importResult = await this.importStep(document, file);
         } else if (this.extensionIs(fileName, ".iges", ".igs")) {
             importResult = await this.importIges(document, file);
+        } else if (this.extensionIs(fileName, ".svg")) {
+            importResult = await this.importSvg(document, file);
         }
 
         this.handleImportResult(document, fileName, importResult);
@@ -83,6 +86,12 @@ export class DefaultDataExchange implements IDataExchange {
     private async importStep(document: IDocument, file: File) {
         const content = new Uint8Array(await file.arrayBuffer());
         return document.application.shapeFactory.converter.convertFromSTEP(document, content);
+    }
+
+    private async importSvg(document: IDocument, file: File) {
+        const svgContent = await file.text();
+        const svgConverter = new SVGConverter();
+        return svgConverter.convertFromSVG(document, svgContent);
     }
 
     async export(type: string, nodes: VisualNode[]): Promise<BlobPart[] | undefined> {
