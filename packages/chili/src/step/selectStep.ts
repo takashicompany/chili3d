@@ -6,6 +6,7 @@ import {
     I18nKeys,
     IDocument,
     INodeFilter,
+    INodeVisual,
     IShapeFilter,
     ShapeNode,
     ShapeType,
@@ -126,6 +127,46 @@ export class GetOrSelectNodeStep extends SelectNodeStep {
                 shapes: [],
                 nodes: selected as ShapeNode[],
             });
+        }
+
+        return super.execute(document, controller);
+    }
+}
+
+export class GetOrSelectShapeStep extends SelectShapeStep {
+    override async execute(
+        document: IDocument,
+        controller: AsyncController,
+    ): Promise<SnapResult | undefined> {
+        const selectedNodes = document.selection
+            .getSelectedNodes()
+            .filter((x): x is ShapeNode => x instanceof ShapeNode);
+
+        if (selectedNodes.length > 0) {
+            const shapes = selectedNodes
+                .filter((node) => {
+                    if (!node.shape.isOk) return false;
+                    return (node.shape.value.shapeType & this.snapeType) !== 0;
+                })
+                .map((node) => {
+                    const visual = document.visual.context.getVisual(node) as INodeVisual;
+                    return {
+                        shape: node.shape.value,
+                        owner: visual,
+                        transform: node.transform,
+                        indexes: [],
+                    };
+                })
+                .filter((x) => x.owner !== undefined);
+
+            if (shapes.length > 0) {
+                controller.success();
+                return {
+                    view: document.application.activeView!,
+                    shapes,
+                    nodes: shapes.map((x) => x.owner.node),
+                };
+            }
         }
 
         return super.execute(document, controller);

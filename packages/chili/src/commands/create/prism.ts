@@ -6,7 +6,7 @@ import { GeoUtils } from "chili-geo";
 import { PrismNode } from "../../bodys";
 import { LengthAtAxisSnapData } from "../../snap";
 import { IStep, LengthAtAxisStep } from "../../step";
-import { SelectShapeStep } from "../../step/selectStep";
+import { GetOrSelectShapeStep } from "../../step/selectStep";
 import { CreateCommand } from "../createCommand";
 
 @command({
@@ -39,10 +39,13 @@ export class Prism extends CreateCommand {
 
     protected override getSteps(): IStep[] {
         return [
-            new SelectShapeStep(ShapeType.Face | ShapeType.Edge | ShapeType.Wire, "prompt.select.shape", {
-                multiple: true,
-                keepSelection: true,
-            }),
+            new GetOrSelectShapeStep(
+                ShapeType.Face | ShapeType.Edge | ShapeType.Wire,
+                "prompt.select.shape",
+                {
+                    multiple: true,
+                },
+            ),
             new LengthAtAxisStep("prompt.pickNextPoint", this.getLengthStepData, true),
         ];
     }
