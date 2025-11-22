@@ -157,3 +157,47 @@ export class ConvertToSolid extends ConvertCommand {
         return Result.ok(solid);
     }
 }
+
+@command({
+    key: "convert.eachToFace",
+    icon: "icon-toFace",
+})
+export class ConvertEachToFace extends ConvertCommand {
+    override async executeAsync(): Promise<void> {
+        const models = await this.getOrPickModels(this.document);
+        if (!models) {
+            PubSub.default.pub("showToast", "toast.select.noSelected");
+            return;
+        }
+
+        Transaction.execute(this.document, `excute ${Object.getPrototypeOf(this).data.name}`, () => {
+            let successCount = 0;
+            (models as ShapeNode[]).forEach((model) => {
+                const edge = model.shape.value.transformedMul(model.worldTransform()) as IEdge;
+                const faceNode = new FaceNode(this.document, [edge]);
+                const shape = faceNode.generateShape();
+
+                if (shape.isOk) {
+                    this.document.rootNode.add(faceNode);
+                    successCount++;
+                } else {
+                    faceNode.dispose();
+                }
+
+                model.parent?.remove(model);
+            });
+
+            this.document.visual.update();
+            if (successCount > 0) {
+                PubSub.default.pub("showToast", "toast.success");
+            } else {
+                PubSub.default.pub("showToast", "toast.converter.error");
+            }
+        });
+    }
+
+    protected override create(document: IDocument, models: ShapeNode[]): Result<GeometryNode> {
+        // Not used but required by abstract class
+        throw new Error("Not used");
+    }
+}

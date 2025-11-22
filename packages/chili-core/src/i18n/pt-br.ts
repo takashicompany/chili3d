@@ -35,6 +35,7 @@ export default {
         "command.convert.fuse": "Fundir",
         "command.create.revol": "Revolve",
         "command.convert.toFace": "Para Face",
+        "command.convert.eachToFace": "Cada Para Face",
         "command.convert.toShell": "Para Casca",
         "command.convert.toSolid": "Para Sólido",
         "command.convert.toWire": "Para Wireframe",

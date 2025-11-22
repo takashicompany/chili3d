@@ -48,6 +48,7 @@ const I18N_KEYS = [
     "command.create.revol",
     "command.create.sweep",
     "command.convert.toFace",
+    "command.convert.eachToFace",
     "command.convert.toShell",
     "command.convert.toSolid",
     "command.convert.toWire",

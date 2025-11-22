@@ -53,6 +53,7 @@ export default {
         "command.create.revol": "旋转",
         "command.create.sweep": "扫略",
         "command.convert.toFace": "转为面",
+        "command.convert.eachToFace": "分别转为面",
         "command.convert.toShell": "转为壳",
         "command.convert.toSolid": "转为体",
         "command.convert.toWire": "转多段线",
