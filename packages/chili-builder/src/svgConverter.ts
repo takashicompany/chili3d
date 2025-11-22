@@ -84,7 +84,7 @@ export class SVGConverter {
 
             this.addLog(`Import completed: ${successCount} success, ${failCount} failed`);
 
-            if (folder.children.length === 0) {
+            if (folder.count === 0) {
                 return Result.err(this.getErrorWithLogs("No valid paths could be imported"));
             }
 
