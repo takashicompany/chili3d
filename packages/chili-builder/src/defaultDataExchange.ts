@@ -55,7 +55,8 @@ export class DefaultDataExchange implements IDataExchange {
 
     private handleImportResult(document: IDocument, name: string, nodeResult: Result<INode> | undefined) {
         if (!nodeResult?.isOk) {
-            alert(I18n.translate("error.import.unsupportedFileType:{0}", name));
+            const errorDetail = nodeResult?.error || "Unknown error";
+            alert(`Import failed: ${name}\n\n${errorDetail}`);
             return;
         }
 

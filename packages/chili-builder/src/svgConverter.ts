@@ -5,56 +5,93 @@ import { SVGPathData, SVGPathDataParser } from "svg-pathdata";
 import { EditableShapeNode, GroupNode, IDocument, IEdge, Result, XYZ } from "chili-core";
 
 export class SVGConverter {
+    private logs: string[] = [];
+
+    private addLog(message: string) {
+        const timestamp = new Date().toISOString().split("T")[1].split(".")[0];
+        this.logs.push(`[${timestamp}] ${message}`);
+    }
+
+    private getErrorWithLogs(errorMessage: string): string {
+        return `${errorMessage}\n\n--- Debug Log ---\n${this.logs.join("\n")}`;
+    }
+
     convertFromSVG(document: IDocument, svgContent: string): Result<GroupNode> {
+        this.logs = [];
+        this.addLog("SVG import started");
+
         try {
             const parser = new DOMParser();
             const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+            this.addLog("SVG content parsed by DOMParser");
 
             // Check for parsing errors
             const parserError = svgDoc.querySelector("parsererror");
             if (parserError) {
-                return Result.err("Invalid SVG file");
+                this.addLog(`Parser error detected: ${parserError.textContent}`);
+                return Result.err(this.getErrorWithLogs("Invalid SVG file"));
             }
 
             const pathElements = svgDoc.querySelectorAll("path");
+            this.addLog(`Found ${pathElements.length} path elements`);
+
             if (pathElements.length === 0) {
-                return Result.err("No path elements found in SVG");
+                return Result.err(this.getErrorWithLogs("No path elements found in SVG"));
             }
 
             const folder = new GroupNode(document, "SVG Import");
+            let successCount = 0;
+            let failCount = 0;
 
             pathElements.forEach((pathElement, index) => {
                 const d = pathElement.getAttribute("d");
-                if (!d || d.trim() === "") return;
+                this.addLog(`Processing path ${index + 1}: d="${d?.substring(0, 50)}..."`);
+
+                if (!d || d.trim() === "") {
+                    this.addLog(`Path ${index + 1}: empty d attribute, skipping`);
+                    return;
+                }
 
                 const pathResult = this.convertPathToEdges(document, d);
                 if (!pathResult.isOk) {
-                    console.warn(`Path ${index} conversion failed:`, pathResult.error);
+                    this.addLog(`Path ${index + 1} conversion failed: ${pathResult.error}`);
+                    failCount++;
                     return;
                 }
 
                 const edges = pathResult.value;
-                if (edges.length === 0) return;
+                this.addLog(`Path ${index + 1}: generated ${edges.length} edges`);
+
+                if (edges.length === 0) {
+                    this.addLog(`Path ${index + 1}: no edges generated, skipping`);
+                    return;
+                }
 
                 // Create wire from edges
                 const wireResult = document.application.shapeFactory.wire(edges);
                 if (!wireResult.isOk) {
-                    console.warn(`Wire creation failed for path ${index}:`, wireResult.error);
+                    this.addLog(`Path ${index + 1} wire creation failed: ${wireResult.error}`);
+                    failCount++;
                     return;
                 }
 
                 const pathName = pathElement.getAttribute("id") || `Path ${index + 1}`;
                 const shapeNode = new EditableShapeNode(document, pathName, wireResult.value);
                 folder.add(shapeNode);
+                this.addLog(`Path ${index + 1}: successfully created as "${pathName}"`);
+                successCount++;
             });
 
+            this.addLog(`Import completed: ${successCount} success, ${failCount} failed`);
+
             if (folder.children.length === 0) {
-                return Result.err("No valid paths could be imported");
+                return Result.err(this.getErrorWithLogs("No valid paths could be imported"));
             }
 
             return Result.ok(folder);
         } catch (error) {
-            return Result.err(`SVG conversion error: ${error}`);
+            this.addLog(`Exception caught: ${error}`);
+            return Result.err(this.getErrorWithLogs(`SVG conversion error: ${error}`));
         }
     }
 
@@ -63,6 +100,7 @@ export class SVGConverter {
             // Parse and convert to absolute coordinates
             const parser = new SVGPathDataParser();
             const commands = new SVGPathData(pathData).toAbs().commands;
+            this.addLog(`Parsed ${commands.length} path commands`);
 
             const edges: IEdge[] = [];
             let currentPoint = new XYZ(0, 0, 0);
@@ -184,7 +222,7 @@ export class SVGConverter {
                     case SVGPathData.ARC:
                         // For now, approximate arc with a straight line
                         // TODO: Implement proper elliptical arc conversion
-                        console.warn(
+                        this.addLog(
                             "Elliptical arc (A) command not fully supported yet, using line approximation",
                         );
                         const arcEnd = new XYZ(cmd.x, -cmd.y, 0);
@@ -217,12 +255,14 @@ export class SVGConverter {
                         break;
 
                     default:
-                        console.warn(`Unsupported SVG path command: ${(cmd as any).type}`);
+                        this.addLog(`Unsupported SVG path command: ${(cmd as any).type}`);
                 }
             }
 
+            this.addLog(`Total edges generated: ${edges.length}`);
             return Result.ok(edges);
         } catch (error) {
+            this.addLog(`Path conversion exception: ${error}`);
             return Result.err(`Path conversion error: ${error}`);
         }
     }
