@@ -98,6 +98,7 @@ const I18N_KEYS = [
     "command.modify.removeFeature",
     "command.modify.removeShapes",
     "command.modify.rotate",
+    "command.modify.setOriginToCenter",
     "command.modify.split",
     "command.modify.trim",
     "command.special.last",

@@ -28,6 +28,7 @@ export const DefaultRibbon: RibbonTab[] = [
                     ["modify.fillet", "modify.chamfer", "modify.explode"],
                     ["modify.deleteNode", "modify.removeShapes", "modify.removeFeature"],
                     ["modify.brushAdd", "modify.brushRemove", "modify.brushClear"],
+                    "modify.setOriginToCenter",
                 ],
             },
             {
@@ -110,6 +111,7 @@ export const DefaultRibbon: RibbonTab[] = [
                     "modify.fillet",
                     "modify.chamfer",
                     "modify.removeFeature",
+                    "modify.setOriginToCenter",
                 ],
             },
             {
