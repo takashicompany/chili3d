@@ -11,6 +11,7 @@ import {
     ShapeNode,
     ShapeType,
     VisualState,
+    XYZ,
 } from "chili-core";
 import { SnapResult } from "../snap";
 import { IStep } from "./step";
@@ -150,10 +151,13 @@ export class GetOrSelectShapeStep extends SelectShapeStep {
                 })
                 .map((node) => {
                     const visual = document.visual.context.getVisual(node) as INodeVisual;
+                    const shape = node.shape.value;
+                    const point = this.getReferencePoint(shape);
                     return {
-                        shape: node.shape.value,
+                        shape,
                         owner: visual,
                         transform: node.transform,
+                        point,
                         indexes: [],
                     };
                 })
@@ -170,5 +174,14 @@ export class GetOrSelectShapeStep extends SelectShapeStep {
         }
 
         return super.execute(document, controller);
+    }
+
+    private getReferencePoint(shape: any): XYZ {
+        const mesh = shape.mesh;
+        const position = mesh.faces?.position || mesh.edges?.position;
+        if (position && position.length >= 3) {
+            return new XYZ(position[0], position[1], position[2]);
+        }
+        return XYZ.zero;
     }
 }
