@@ -56,7 +56,7 @@ export class DefaultDataExchange implements IDataExchange {
     private handleImportResult(document: IDocument, name: string, nodeResult: Result<INode> | undefined) {
         if (!nodeResult?.isOk) {
             const errorDetail = nodeResult?.error || "Unknown error";
-            alert(`Import failed: ${name}\n\n${errorDetail}`);
+            PubSub.default.pub("showErrorDialog", "error.import.failed", `File: ${name}\n\n${errorDetail}`);
             return;
         }
 

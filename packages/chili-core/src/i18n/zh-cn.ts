@@ -151,6 +151,7 @@ export default {
         "error.input.threeNumberCanBeInput": "参照点为空，只能输入 3 个数",
         "error.input.unsupportedInputs": "超过最大输入数",
         "error.import.unsupportedFileType:{0}": "不支持的文件类型: {0}",
+        "error.import.failed": "导入失败",
         "error.export.noNodeCanBeExported": "没有可导出的节点",
         "file.format": "文件格式",
         "home.recent": "最近使用",
