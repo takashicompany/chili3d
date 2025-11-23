@@ -33,7 +33,10 @@ export const DefaultRibbon: RibbonTab[] = [
             },
             {
                 groupName: "ribbon.group.converter",
-                items: ["convert.toWire", ["convert.toFace", "convert.toShell", "convert.toSolid"]],
+                items: [
+                    "convert.toWire",
+                    ["convert.toFace", "convert.eachToFace", "convert.toShell", "convert.toSolid"],
+                ],
             },
             {
                 groupName: "ribbon.group.boolean",
@@ -116,7 +119,13 @@ export const DefaultRibbon: RibbonTab[] = [
             },
             {
                 groupName: "ribbon.group.tools",
-                items: ["create.section", "modify.split", "convert.toWire", "convert.toFace"],
+                items: [
+                    "create.section",
+                    "modify.split",
+                    "convert.toWire",
+                    "convert.toFace",
+                    "convert.eachToFace",
+                ],
             },
             {
                 groupName: "ribbon.group.act",
