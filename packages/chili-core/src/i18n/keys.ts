@@ -101,6 +101,7 @@ const I18N_KEYS = [
     "command.modify.reverseFace",
     "command.modify.rotate",
     "command.modify.setOriginToCenter",
+    "command.modify.showFaceNormals",
     "command.modify.split",
     "command.modify.trim",
     "command.special.last",

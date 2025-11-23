@@ -65,5 +65,6 @@ export default {
         "command.file.export": "Exportar",
         "command.file.import": "Importar",
         "command.modify.reverseFace": "Inverter Face",
+        "command.modify.showFaceNormals": "Mostrar Normais da Face",
     },
 } satisfies Locale;

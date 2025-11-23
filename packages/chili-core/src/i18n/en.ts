@@ -106,6 +106,7 @@ export default {
         "command.modify.reverseFace": "Reverse Face",
         "command.modify.rotate": "Rotate",
         "command.modify.setOriginToCenter": "Set Origin to Center",
+        "command.modify.showFaceNormals": "Show Face Normals",
         "command.modify.split": "Split",
         "command.modify.trim": "Trim",
         "command.special.last": "__Last_COMMAND__",

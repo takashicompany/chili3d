@@ -14,5 +14,6 @@ export * from "./removeSubShapes";
 export * from "./reverseFace";
 export * from "./rotate";
 export * from "./setOriginToCenter";
+export * from "./showFaceNormals";
 export * from "./split";
 export * from "./trim";

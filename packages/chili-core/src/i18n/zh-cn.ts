@@ -106,6 +106,7 @@ export default {
         "command.modify.reverseFace": "反转面",
         "command.modify.rotate": "旋转",
         "command.modify.setOriginToCenter": "设置原点到中心",
+        "command.modify.showFaceNormals": "显示面法线",
         "command.modify.split": "分割",
         "command.modify.trim": "修剪",
         "command.special.last": "__上个命令__",
