@@ -46,6 +46,7 @@ export default {
         "ellipse.majorRadius": "长轴",
         "ellipse.minorRadius": "短轴",
         "command.act.alignCamera": "从相机创建",
+        "command.application.toggleShowFaceNormals": "显示面法线",
         "command.boolean.common": "交集",
         "command.boolean.cut": "减去",
         "command.boolean.join": "合并",

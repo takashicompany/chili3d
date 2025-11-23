@@ -46,6 +46,7 @@ export default {
         "ellipse.majorRadius": "major Radius",
         "ellipse.minorRadius": "minor Radius",
         "command.act.alignCamera": "Align Camera",
+        "command.application.toggleShowFaceNormals": "Show Face Normals",
         "command.boolean.common": "Intersect",
         "command.boolean.cut": "Cut",
         "command.boolean.join": "Join",

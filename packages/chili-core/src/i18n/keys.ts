@@ -41,6 +41,7 @@ const I18N_KEYS = [
     "ellipse.majorRadius",
     "ellipse.minorRadius",
     "command.act.alignCamera",
+    "command.application.toggleShowFaceNormals",
     "command.boolean.common",
     "command.boolean.cut",
     "command.boolean.join",

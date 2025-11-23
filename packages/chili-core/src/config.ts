@@ -83,6 +83,13 @@ export class Config extends Observable {
         this.setProperty("dynamicWorkplane", value);
     }
 
+    get showFaceNormals() {
+        return this.getPrivateValue("showFaceNormals", false);
+    }
+    set showFaceNormals(value: boolean) {
+        this.setProperty("showFaceNormals", value);
+    }
+
     @Serializer.serialze()
     get languageIndex() {
         return this.getPrivateValue("languageIndex");
