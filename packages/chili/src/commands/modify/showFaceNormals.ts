@@ -68,11 +68,11 @@ export class ShowFaceNormals extends MultistepCommand {
         }
     }
 
-    override dispose(): void {
+    protected override afterExecute(): void {
+        super.afterExecute();
         if (this.visualId !== undefined) {
             this.document.visual.context.removeMesh(this.visualId);
             this.visualId = undefined;
         }
-        super.dispose();
     }
 }
