@@ -35,7 +35,8 @@ export const DefaultRibbon: RibbonTab[] = [
                 groupName: "ribbon.group.converter",
                 items: [
                     "convert.toWire",
-                    ["convert.toFace", "convert.eachToFace", "convert.toShell", "convert.toSolid"],
+                    ["convert.toFace", "convert.eachToFace"],
+                    ["convert.toShell", "convert.toSolid"],
                 ],
             },
             {
