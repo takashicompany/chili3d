@@ -28,11 +28,16 @@ export const DefaultRibbon: RibbonTab[] = [
                     ["modify.fillet", "modify.chamfer", "modify.explode"],
                     ["modify.deleteNode", "modify.removeShapes", "modify.removeFeature"],
                     ["modify.brushAdd", "modify.brushRemove", "modify.brushClear"],
+                    "modify.setOriginToCenter",
                 ],
             },
             {
                 groupName: "ribbon.group.converter",
-                items: ["convert.toWire", ["convert.toFace", "convert.toShell", "convert.toSolid"]],
+                items: [
+                    "convert.toWire",
+                    ["convert.toFace", "convert.eachToFace"],
+                    ["convert.toShell", "convert.toSolid"],
+                ],
             },
             {
                 groupName: "ribbon.group.boolean",
@@ -110,11 +115,18 @@ export const DefaultRibbon: RibbonTab[] = [
                     "modify.fillet",
                     "modify.chamfer",
                     "modify.removeFeature",
+                    "modify.setOriginToCenter",
                 ],
             },
             {
                 groupName: "ribbon.group.tools",
-                items: ["create.section", "modify.split", "convert.toWire", "convert.toFace"],
+                items: [
+                    "create.section",
+                    "modify.split",
+                    "convert.toWire",
+                    "convert.toFace",
+                    "convert.eachToFace",
+                ],
             },
             {
                 groupName: "ribbon.group.act",
