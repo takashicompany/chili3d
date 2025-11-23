@@ -11,6 +11,6 @@ import { Binding, Config, IApplication, ICommand, command } from "chili-core";
 export class ToggleShowFaceNormalsCommand implements ICommand {
     async execute(app: IApplication): Promise<void> {
         Config.instance.showFaceNormals = !Config.instance.showFaceNormals;
-        app.activeDocument?.visual.update();
+        app.activeView?.document?.visual.update();
     }
 }

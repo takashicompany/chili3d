@@ -4,10 +4,11 @@
 import {
     Binding,
     Config,
+    EdgeMeshData,
     IApplication,
     ICommand,
     IFace,
-    ShapeMeshData,
+    LineType,
     ShapeNode,
     ShapeType,
     VisualConfig,
@@ -26,7 +27,7 @@ export class ShowFaceNormals implements ICommand {
         const newValue = !Config.instance.showFaceNormals;
         Config.instance.showFaceNormals = newValue;
 
-        const document = app.activeDocument;
+        const document = app.activeView?.document;
         if (!document) return;
 
         // Remove existing normals
@@ -37,7 +38,7 @@ export class ShowFaceNormals implements ICommand {
 
         // If turning on, display normals
         if (newValue) {
-            const meshes: ShapeMeshData[] = [];
+            const meshes: EdgeMeshData[] = [];
 
             // Get all shape nodes in the document
             const allNodes = this.getAllShapeNodes(document.rootNode);
@@ -97,27 +98,25 @@ export class ShowFaceNormals implements ICommand {
         return result;
     }
 
-    private createLineMesh(start: any, end: any): ShapeMeshData {
+    private createLineMesh(start: any, end: any): EdgeMeshData {
         const positions = new Float32Array([start.x, start.y, start.z, end.x, end.y, end.z]);
 
         return {
-            faces: undefined,
-            edges: {
-                position: positions,
-                color: VisualConfig.highlightEdgeColor,
-                lineWidth: 2,
-            },
+            position: positions,
+            range: [],
+            color: VisualConfig.highlightEdgeColor,
+            lineType: LineType.Solid,
+            lineWidth: 2,
         };
     }
 
-    private createPointMesh(point: any): ShapeMeshData {
+    private createPointMesh(point: any): EdgeMeshData {
         return {
-            faces: undefined,
-            edges: {
-                position: new Float32Array([point.x, point.y, point.z]),
-                color: VisualConfig.highlightEdgeColor,
-                lineWidth: 5,
-            },
+            position: new Float32Array([point.x, point.y, point.z]),
+            range: [],
+            color: VisualConfig.highlightEdgeColor,
+            lineType: LineType.Solid,
+            lineWidth: 5,
         };
     }
 }
