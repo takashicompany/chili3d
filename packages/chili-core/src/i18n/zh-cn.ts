@@ -103,6 +103,7 @@ export default {
         "command.modify.move": "移动",
         "command.modify.removeFeature": "删除特征",
         "command.modify.removeShapes": "删除子元素",
+        "command.modify.reverseFace": "反转面",
         "command.modify.rotate": "旋转",
         "command.modify.setOriginToCenter": "设置原点到中心",
         "command.modify.split": "分割",

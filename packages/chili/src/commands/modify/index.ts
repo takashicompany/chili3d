@@ -11,6 +11,7 @@ export * from "./mirror";
 export * from "./move";
 export * from "./removeFeature";
 export * from "./removeSubShapes";
+export * from "./reverseFace";
 export * from "./rotate";
 export * from "./setOriginToCenter";
 export * from "./split";

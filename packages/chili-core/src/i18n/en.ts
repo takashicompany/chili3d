@@ -103,6 +103,7 @@ export default {
         "command.modify.move": "Move",
         "command.modify.removeFeature": "Remove Feature",
         "command.modify.removeShapes": "Remove Shapes",
+        "command.modify.reverseFace": "Reverse Face",
         "command.modify.rotate": "Rotate",
         "command.modify.setOriginToCenter": "Set Origin to Center",
         "command.modify.split": "Split",
