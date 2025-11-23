@@ -8,9 +8,12 @@ import {
     IApplication,
     ICommand,
     IFace,
+    INode,
     LineType,
+    ShapeMeshData,
     ShapeNode,
     ShapeType,
+    VertexMeshData,
     VisualConfig,
     command,
 } from "chili-core";
@@ -38,7 +41,7 @@ export class ShowFaceNormals implements ICommand {
 
         // If turning on, display normals
         if (newValue) {
-            const meshes: EdgeMeshData[] = [];
+            const meshes: ShapeMeshData[] = [];
 
             // Get all shape nodes in the document
             const allNodes = this.getAllShapeNodes(document.rootNode);
@@ -58,8 +61,8 @@ export class ShowFaceNormals implements ICommand {
                     const area = face.area();
                     const length = Math.sqrt(area) * 0.3; // 30% of characteristic dimension
 
-                    // Create arrow end point
-                    const endPoint = point.add(normal.multiply(length));
+                    // Create arrow end point (reversed to match extrude direction)
+                    const endPoint = point.add(normal.multiply(-length));
 
                     // Transform points by node's world transform
                     const transform = node.worldTransform();
@@ -89,9 +92,11 @@ export class ShowFaceNormals implements ICommand {
             result.push(node);
         }
 
-        if (node.children) {
-            for (const child of node.children) {
+        if (INode.isLinkedListNode(node)) {
+            let child = node.firstChild;
+            while (child) {
                 result.push(...this.getAllShapeNodes(child));
+                child = child.nextSibling;
             }
         }
 
@@ -110,13 +115,7 @@ export class ShowFaceNormals implements ICommand {
         };
     }
 
-    private createPointMesh(point: any): EdgeMeshData {
-        return {
-            position: new Float32Array([point.x, point.y, point.z]),
-            range: [],
-            color: VisualConfig.highlightEdgeColor,
-            lineType: LineType.Solid,
-            lineWidth: 5,
-        };
+    private createPointMesh(point: any): VertexMeshData {
+        return VertexMeshData.from(point, VisualConfig.editVertexSize, VisualConfig.highlightEdgeColor);
     }
 }

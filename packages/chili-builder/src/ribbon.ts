@@ -29,7 +29,7 @@ export const DefaultRibbon: RibbonTab[] = [
                     ["modify.deleteNode", "modify.removeShapes", "modify.removeFeature"],
                     ["modify.brushAdd", "modify.brushRemove", "modify.brushClear"],
                     "modify.setOriginToCenter",
-                    ["modify.reverseFace", "application.toggleShowFaceNormals"],
+                    ["modify.reverseFace", "modify.showFaceNormals"],
                 ],
             },
             {
