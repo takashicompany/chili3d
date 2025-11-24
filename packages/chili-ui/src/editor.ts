@@ -12,6 +12,7 @@ import {
     Material,
     PubSub,
     RibbonTab,
+    ObservableCollection,
 } from "chili-core";
 import style from "./editor.module.css";
 import { OKCancel } from "./okCancel";
@@ -21,6 +22,7 @@ import { MaterialDataContent, MaterialEditor } from "./property/material";
 import { Ribbon, RibbonDataContent } from "./ribbon";
 import { RibbonTabData } from "./ribbon/ribbonData";
 import { Statusbar } from "./statusbar";
+import { Toolbar } from "./toolbar";
 import { LayoutViewport } from "./viewport";
 
 let quickCommands: CommandKeys[] = ["doc.save", "doc.saveToFile", "edit.undo", "edit.redo"];
@@ -29,8 +31,11 @@ export class Editor extends HTMLElement {
     readonly ribbonContent: RibbonDataContent;
     private readonly _selectionController: OKCancel;
     private readonly _viewportContainer: HTMLDivElement;
+    private _ribbonWidth: number = 280;
     private _sidebarWidth: number = 360;
+    private _isResizingRibbon: boolean = false;
     private _isResizingSidebar: boolean = false;
+    private _ribbonEl: HTMLDivElement | null = null;
     private _sidebarEl: HTMLDivElement | null = null;
 
     constructor(
@@ -38,6 +43,8 @@ export class Editor extends HTMLElement {
         tabs: RibbonTab[],
     ) {
         super();
+        const quickCommandsCollection = new ObservableCollection<CommandKeys>();
+        quickCommandsCollection.push(...quickCommands);
         this.ribbonContent = new RibbonDataContent(app, quickCommands, tabs.map(RibbonTabData.fromProfile));
         const viewport = new LayoutViewport(app);
         viewport.classList.add(style.viewport);
@@ -52,27 +59,65 @@ export class Editor extends HTMLElement {
     }
 
     private render() {
+        this._ribbonEl = div(
+            {
+                className: style.ribbon,
+                style: `width: ${this._ribbonWidth}px;`,
+            },
+            new Ribbon(this.ribbonContent),
+            div({
+                className: style.ribbonResizer,
+                onmousedown: (e: MouseEvent) => this._startRibbonResize(e),
+            }),
+        );
+
         this._sidebarEl = div(
             {
                 className: style.sidebar,
                 style: `width: ${this._sidebarWidth}px;`,
             },
-            new ProjectView({ className: style.sidebarItem }),
-            new PropertyView({ className: style.sidebarItem }),
             div({
                 className: style.sidebarResizer,
                 onmousedown: (e: MouseEvent) => this._startSidebarResize(e),
             }),
+            new PropertyView({ className: style.sidebarItem }),
+            new ProjectView({ className: style.sidebarItem }),
         );
+
         this.append(
             div(
                 { className: style.root },
-                new Ribbon(this.ribbonContent),
-                div({ className: style.content }, this._sidebarEl, this._viewportContainer),
+                new Toolbar(this.ribbonContent, quickCommands),
+                div({ className: style.content }, this._ribbonEl, this._viewportContainer, this._sidebarEl),
                 new Statusbar(style.statusbar),
             ),
         );
         this.app.mainWindow?.appendChild(this);
+    }
+
+    private _startRibbonResize(e: MouseEvent) {
+        e.preventDefault();
+        this._isResizingRibbon = true;
+        if (this.app.mainWindow) this.app.mainWindow.style.cursor = "ew-resize";
+        const onMouseMove = (ev: MouseEvent) => {
+            if (!this._isResizingRibbon) return;
+            if (!this._ribbonEl) return;
+            const ribbonRect = this._ribbonEl.getBoundingClientRect();
+            let newWidth = ev.clientX - ribbonRect.left;
+            const minWidth = 150;
+            const maxWidth = Math.floor(window.innerWidth * 0.5);
+            newWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
+            this._ribbonWidth = newWidth;
+            this._ribbonEl.style.width = `${newWidth}px`;
+        };
+        const onMouseUp = () => {
+            this._isResizingRibbon = false;
+            if (this.app.mainWindow) this.app.mainWindow.style.cursor = "";
+            this.app.mainWindow?.removeEventListener("mousemove", onMouseMove);
+            this.app.mainWindow?.removeEventListener("mouseup", onMouseUp);
+        };
+        this.app.mainWindow?.addEventListener("mousemove", onMouseMove);
+        this.app.mainWindow?.addEventListener("mouseup", onMouseUp);
     }
 
     private _startSidebarResize(e: MouseEvent) {
@@ -83,9 +128,9 @@ export class Editor extends HTMLElement {
             if (!this._isResizingSidebar) return;
             if (!this._sidebarEl) return;
             const sidebarRect = this._sidebarEl.getBoundingClientRect();
-            let newWidth = ev.clientX - sidebarRect.left;
-            const minWidth = 75;
-            const maxWidth = Math.floor(window.innerWidth * 0.85);
+            let newWidth = sidebarRect.right - ev.clientX;
+            const minWidth = 150;
+            const maxWidth = Math.floor(window.innerWidth * 0.5);
             newWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
             this._sidebarWidth = newWidth;
             this._sidebarEl.style.width = `${newWidth}px`;

@@ -14,13 +14,24 @@
     flex: 1 1 auto;
     height: 0;
 
+    & .ribbon {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+        max-width: 50%;
+        background-color: var(--background-color);
+        position: relative;
+        border-right: 1px solid var(--border-color);
+    }
+
     & .sidebar {
         display: flex;
         flex-direction: column;
         min-width: 150px;
-        max-width: 85%;
+        max-width: 50%;
         background-color: var(--background-color);
         position: relative;
+        border-left: 1px solid var(--border-color);
 
         & .sidebarItem {
             margin-top: 10px;
@@ -43,12 +54,27 @@
     }
 }
 
-.sidebarResizer {
+.ribbonResizer {
     width: 6px;
     cursor: ew-resize;
     position: absolute;
     top: 0;
     right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: var(--resizer-gradient);
+    transition: background 0.2s;
+}
+.ribbonResizer:hover {
+    background: var(--resizer-gradient-hover);
+}
+
+.sidebarResizer {
+    width: 6px;
+    cursor: ew-resize;
+    position: absolute;
+    top: 0;
+    left: 0;
     bottom: 0;
     z-index: 10;
     background: var(--resizer-gradient);
