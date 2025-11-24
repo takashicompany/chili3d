@@ -84,6 +84,22 @@ export class Config extends Observable {
     }
 
     @Serializer.serialze()
+    get showFaceNormals() {
+        return this.getPrivateValue("showFaceNormals", false);
+    }
+    set showFaceNormals(value: boolean) {
+        this.setProperty("showFaceNormals", value);
+    }
+
+    @Serializer.serialze()
+    get normalLength() {
+        return this.getPrivateValue("normalLength", 1.0);
+    }
+    set normalLength(value: number) {
+        this.setProperty("normalLength", value);
+    }
+
+    @Serializer.serialze()
     get languageIndex() {
         return this.getPrivateValue("languageIndex");
     }

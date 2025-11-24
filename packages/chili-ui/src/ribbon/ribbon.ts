@@ -22,6 +22,7 @@ import {
 import { CommandContext } from "./commandContext";
 import style from "./ribbon.module.css";
 import { RibbonButton } from "./ribbonButton";
+import { RibbonCheckboxWithInput } from "./ribbonCheckboxWithInput";
 import { RibbonCommandData, RibbonGroupData, RibbonTabData } from "./ribbonData";
 import { RibbonStack } from "./ribbonStack";
 
@@ -60,8 +61,8 @@ export class RibbonDataContent extends Observable {
 
 export const QuickButton = (command: ICommand) => {
     const data = Command.getData(command);
-    if (!data) {
-        Logger.warn("commandData is undefined");
+    if (!data || !data.icon) {
+        Logger.warn("commandData is undefined or has no icon");
         return span({ textContent: "null" });
     }
 
@@ -242,6 +243,10 @@ export class Ribbon extends HTMLElement {
 
     private ribbonButton(item: RibbonCommandData) {
         if (typeof item === "string") {
+            // Special handling for showFaceNormals
+            if (item === "modify.showFaceNormals") {
+                return RibbonCheckboxWithInput.forShowFaceNormals();
+            }
             return RibbonButton.fromCommandName(item, ButtonSize.large)!;
         } else if (item instanceof ObservableCollection) {
             const stack = new RibbonStack();

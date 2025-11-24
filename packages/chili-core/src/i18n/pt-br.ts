@@ -64,5 +64,8 @@ export default {
         "command.edit.undo": "Desfazer",
         "command.file.export": "Exportar",
         "command.file.import": "Importar",
+        "command.application.toggleShowFaceNormals": "Mostrar Normais da Face",
+        "command.modify.reverseFace": "Inverter Face",
+        "command.modify.showFaceNormals": "Mostrar Normais da Face",
     },
 } satisfies Locale;
