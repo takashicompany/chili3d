@@ -29,7 +29,7 @@ export const DefaultRibbon: RibbonTab[] = [
                     ["modify.deleteNode", "modify.removeShapes", "modify.removeFeature"],
                     ["modify.brushAdd", "modify.brushRemove", "modify.brushClear"],
                     "modify.setOriginToCenter",
-                    ["modify.reverseFace", "modify.showFaceNormals"],
+                    "modify.reverseFace",
                 ],
             },
             {
@@ -136,6 +136,15 @@ export const DefaultRibbon: RibbonTab[] = [
             {
                 groupName: "ribbon.group.other",
                 items: ["test.performance"],
+            },
+        ],
+    },
+    {
+        tabName: "ribbon.tab.options",
+        groups: [
+            {
+                groupName: "ribbon.group.display",
+                items: ["modify.showFaceNormals"],
             },
         ],
     },

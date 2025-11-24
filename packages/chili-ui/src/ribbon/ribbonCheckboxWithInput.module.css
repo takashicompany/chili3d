@@ -1,0 +1,64 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    min-width: 150px;
+}
+
+.inputContainer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.label {
+    font-size: 12px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.numberContainer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.numberInput {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 12px;
+    border: 1px solid var(--vscode-input-border);
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border-radius: 2px;
+}
+
+.numberInput:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+}
+
+.applyButton {
+    padding: 2px 6px;
+    font-size: 12px;
+    border: 1px solid var(--vscode-button-border);
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border-radius: 2px;
+    cursor: pointer;
+    min-width: 24px;
+}
+
+.applyButton:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.applyButton:active {
+    background-color: var(--vscode-button-background);
+}

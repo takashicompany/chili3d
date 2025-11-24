@@ -10,27 +10,51 @@ import {
     IFace,
     INode,
     LineType,
+    PubSub,
     ShapeMeshData,
     ShapeNode,
     ShapeType,
     VertexMeshData,
     VisualConfig,
     command,
+    getCurrentApplication,
 } from "chili-core";
 
 @command({
     key: "modify.showFaceNormals",
     toggle: new Binding(Config.instance, "showFaceNormals"),
-    icon: "icon-toFace",
 })
 export class ShowFaceNormals implements ICommand {
     private static visualId?: number;
+    private static currentDocument?: any;
+    private static initialized = false;
+
+    static {
+        // Subscribe to update events
+        if (!ShowFaceNormals.initialized) {
+            PubSub.default.sub("updateFaceNormals", () => {
+                ShowFaceNormals.updateDisplay();
+            });
+            ShowFaceNormals.initialized = true;
+        }
+    }
 
     async execute(app: IApplication): Promise<void> {
-        const newValue = !Config.instance.showFaceNormals;
-        Config.instance.showFaceNormals = newValue;
-
         const document = app.activeView?.document;
+        if (!document) return;
+
+        // Toggle the setting
+        Config.instance.showFaceNormals = !Config.instance.showFaceNormals;
+
+        ShowFaceNormals.currentDocument = document;
+        ShowFaceNormals.updateDisplay(document);
+    }
+
+    static updateDisplay(document?: any) {
+        if (!document) {
+            const app = getCurrentApplication();
+            document = app?.activeView?.document ?? ShowFaceNormals.currentDocument;
+        }
         if (!document) return;
 
         // Remove existing normals
@@ -39,12 +63,12 @@ export class ShowFaceNormals implements ICommand {
             ShowFaceNormals.visualId = undefined;
         }
 
-        // If turning on, display normals
-        if (newValue) {
+        // If enabled, display normals
+        if (Config.instance.showFaceNormals) {
             const meshes: ShapeMeshData[] = [];
 
             // Get all shape nodes in the document
-            const allNodes = this.getAllShapeNodes(document.rootNode);
+            const allNodes = ShowFaceNormals.getAllShapeNodes(document.rootNode);
 
             allNodes.forEach((node) => {
                 const shape = node.shape.value;
@@ -57,9 +81,8 @@ export class ShowFaceNormals implements ICommand {
                     // Get face center point and normal
                     const [point, normal] = face.normal(0.5, 0.5);
 
-                    // Calculate arrow length based on face area
-                    const area = face.area();
-                    const length = Math.sqrt(area) * 0.3; // 30% of characteristic dimension
+                    // Use configured normal length
+                    const length = Config.instance.normalLength;
 
                     // Create arrow end point (reversed to match extrude direction)
                     const endPoint = point.add(normal.multiply(-length));
@@ -70,11 +93,11 @@ export class ShowFaceNormals implements ICommand {
                     const transformedEnd = transform.ofPoint(endPoint);
 
                     // Add line mesh for normal vector
-                    const lineMesh = this.createLineMesh(transformedPoint, transformedEnd);
+                    const lineMesh = ShowFaceNormals.createLineMesh(transformedPoint, transformedEnd);
                     meshes.push(lineMesh);
 
                     // Add small sphere at tip to indicate direction
-                    const arrowTip = this.createPointMesh(transformedEnd);
+                    const arrowTip = ShowFaceNormals.createPointMesh(transformedEnd);
                     meshes.push(arrowTip);
                 });
             });
@@ -85,7 +108,7 @@ export class ShowFaceNormals implements ICommand {
         }
     }
 
-    private getAllShapeNodes(node: any): ShapeNode[] {
+    private static getAllShapeNodes(node: any): ShapeNode[] {
         const result: ShapeNode[] = [];
 
         if (node instanceof ShapeNode) {
@@ -95,7 +118,7 @@ export class ShowFaceNormals implements ICommand {
         if (INode.isLinkedListNode(node)) {
             let child = node.firstChild;
             while (child) {
-                result.push(...this.getAllShapeNodes(child));
+                result.push(...ShowFaceNormals.getAllShapeNodes(child));
                 child = child.nextSibling;
             }
         }
@@ -103,7 +126,7 @@ export class ShowFaceNormals implements ICommand {
         return result;
     }
 
-    private createLineMesh(start: any, end: any): EdgeMeshData {
+    private static createLineMesh(start: any, end: any): EdgeMeshData {
         const positions = new Float32Array([start.x, start.y, start.z, end.x, end.y, end.z]);
 
         return {
@@ -115,7 +138,7 @@ export class ShowFaceNormals implements ICommand {
         };
     }
 
-    private createPointMesh(point: any): VertexMeshData {
+    private static createPointMesh(point: any): VertexMeshData {
         return VertexMeshData.from(point, VisualConfig.editVertexSize, VisualConfig.highlightEdgeColor);
     }
 }
