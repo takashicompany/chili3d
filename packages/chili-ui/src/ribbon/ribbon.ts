@@ -72,18 +72,6 @@ export const QuickButton = (command: ICommand) => {
     });
 };
 
-class ActivedRibbonTabConverter implements IConverter<RibbonTabData> {
-    constructor(
-        readonly tab: RibbonTabData,
-        readonly style: string,
-        readonly activeStyle: string,
-    ) {}
-
-    convert(value: RibbonTabData): Result<string> {
-        return Result.ok(this.tab === value ? `${this.style} ${this.activeStyle}` : this.style);
-    }
-}
-
 class DisplayConverter implements IConverter<RibbonTabData> {
     constructor(readonly tab: RibbonTabData) {}
 
@@ -99,22 +87,7 @@ export class Ribbon extends HTMLElement {
     constructor(readonly dataContent: RibbonDataContent) {
         super();
         this.className = style.root;
-        this.append(this.ribbonHeader(), this.ribbonTabs(), this._commandContext);
-    }
-
-    private ribbonHeader() {
-        return collection({
-            className: style.ribbonHeaderPanel,
-            sources: this.dataContent.ribbonTabs,
-            template: (tab: RibbonTabData) => {
-                const converter = new ActivedRibbonTabConverter(tab, style.tabHeader, style.activedTab);
-                return label({
-                    className: new Binding(this.dataContent, "activeTab", converter),
-                    textContent: new Localize(tab.tabName),
-                    onclick: () => (this.dataContent.activeTab = tab),
-                });
-            },
-        });
+        this.append(this.ribbonTabs(), this._commandContext);
     }
 
     private ribbonTabs() {

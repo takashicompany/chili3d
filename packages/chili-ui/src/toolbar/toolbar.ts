@@ -1,9 +1,10 @@
 // Part of the Chili3d Project, under the AGPL-3.0 License.
 // See LICENSE file in the project root for full license information.
 
-import { a, collection, div, span, svg } from "chili-controls";
+import { a, collection, div, label, span, svg } from "chili-controls";
 import { CommandKeys, I18n, IView, Localize, PubSub, Binding, IConverter, Result } from "chili-core";
 import { QuickButton, RibbonDataContent } from "../ribbon";
+import { RibbonTabData } from "../ribbon/ribbonData";
 import style from "./toolbar.module.css";
 
 class ViewActiveConverter implements IConverter<IView> {
@@ -18,6 +19,18 @@ class ViewActiveConverter implements IConverter<IView> {
     }
 }
 
+class ActivedRibbonTabConverter implements IConverter<RibbonTabData> {
+    constructor(
+        readonly tab: RibbonTabData,
+        readonly style: string,
+        readonly activeStyle: string,
+    ) {}
+
+    convert(value: RibbonTabData): Result<string> {
+        return Result.ok(this.tab === value ? `${this.style} ${this.activeStyle}` : this.style);
+    }
+}
+
 export class Toolbar extends HTMLElement {
     constructor(
         readonly dataContent: RibbonDataContent,
@@ -25,7 +38,7 @@ export class Toolbar extends HTMLElement {
     ) {
         super();
         this.className = style.root;
-        this.append(this.leftPanel(), this.centerPanel(), this.rightPanel());
+        this.append(this.leftPanel(), this.ribbonTabsPanel(), this.centerPanel(), this.rightPanel());
     }
 
     private leftPanel() {
@@ -49,6 +62,24 @@ export class Toolbar extends HTMLElement {
                     template: (command: CommandKeys) => QuickButton(command as any),
                 }),
             ),
+        );
+    }
+
+    private ribbonTabsPanel() {
+        return div(
+            { className: style.ribbonTabs },
+            span({ className: style.split }),
+            collection({
+                sources: this.dataContent.ribbonTabs,
+                template: (tab: RibbonTabData) => {
+                    const converter = new ActivedRibbonTabConverter(tab, style.tabHeader, style.activedTab);
+                    return label({
+                        className: new Binding(this.dataContent, "activeTab", converter),
+                        textContent: new Localize(tab.tabName),
+                        onclick: () => (this.dataContent.activeTab = tab),
+                    });
+                },
+            }),
         );
     }
 

@@ -86,6 +86,31 @@
     }
 }
 
+.ribbonTabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px 4px;
+    flex: 0 0 auto;
+
+    .tabHeader {
+        color: var(--titlebar-forground-color);
+        padding: 8px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin: 0px 2px;
+
+        &:hover {
+            background-color: var(--hover-background-color);
+        }
+    }
+
+    .activedTab {
+        background-color: var(--panel-background-color);
+        font-weight: bold;
+    }
+}
+
 .center {
     display: flex;
     flex-direction: row;
