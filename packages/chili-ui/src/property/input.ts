@@ -57,6 +57,7 @@ class ArrayValueConverter implements IConverter {
 
 export class InputProperty extends PropertyBase {
     readonly converter: IConverter | undefined;
+    private _isSettingValue: boolean = false;
 
     constructor(
         readonly document: IDocument,
@@ -110,19 +111,24 @@ export class InputProperty extends PropertyBase {
     };
 
     private readonly setValue = (input: HTMLInputElement) => {
-        if (this.isReadOnly()) return;
+        if (this.isReadOnly() || this._isSettingValue) return;
 
-        const newValue = this.converter?.convertBack?.(input.value);
-        if (!newValue?.isOk) {
-            PubSub.default.pub("showToast", "error.default:{0}", newValue?.error);
-            return;
-        }
-        Transaction.execute(this.document, "modify property", () => {
-            this.objects.forEach((x) => {
-                x[this.property.name] = newValue.value;
+        this._isSettingValue = true;
+        try {
+            const newValue = this.converter?.convertBack?.(input.value);
+            if (!newValue?.isOk) {
+                PubSub.default.pub("showToast", "error.default:{0}", newValue?.error);
+                return;
+            }
+            Transaction.execute(this.document, "modify property", () => {
+                this.objects.forEach((x) => {
+                    x[this.property.name] = newValue.value;
+                });
+                this.document.visual.update();
             });
-            this.document.visual.update();
-        });
+        } finally {
+            this._isSettingValue = false;
+        }
     };
 
     private getConverter(): IConverter | undefined {
