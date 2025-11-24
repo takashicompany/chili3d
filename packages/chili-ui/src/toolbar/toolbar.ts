@@ -104,4 +104,6 @@ export class Toolbar extends HTMLElement {
     }
 }
 
-customElements.define("chili-toolbar", Toolbar);
+if (!customElements.get("chili-main-toolbar")) {
+    customElements.define("chili-main-toolbar", Toolbar);
+}
