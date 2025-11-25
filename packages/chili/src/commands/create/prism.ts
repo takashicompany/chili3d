@@ -31,7 +31,6 @@ export class Prism extends CreateCommand {
                 const shape = shapeData.shape.transformedMul(shapeData.transform);
                 const prismNode = new PrismNode(this.document, shape, dist);
                 this.document.addNode(prismNode);
-                this.disposeStack.add(shape);
             });
             this.document.visual.update();
         });
