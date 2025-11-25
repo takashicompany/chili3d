@@ -37,8 +37,10 @@ export class CommandContext extends HTMLElement implements IDisposable {
         super();
         this.className = style.panel;
         let data = Command.getData(command);
+        if (data?.icon) {
+            this.append(svg({ className: style.icon, icon: data.icon }));
+        }
         this.append(
-            svg({ className: style.icon, icon: data!.icon }),
             label({ className: style.title, textContent: new Localize(`command.${data!.key}`) }, `: `),
         );
         this.initContext();

@@ -20,7 +20,7 @@ import style from "./ribbonButton.module.css";
 export class RibbonButton extends HTMLElement {
     constructor(
         display: I18nKeys,
-        icon: string,
+        icon: string | undefined,
         size: ButtonSize,
         readonly onClick: () => void,
     ) {
@@ -47,16 +47,19 @@ export class RibbonButton extends HTMLElement {
         this.removeEventListener("click", this.onClick);
     }
 
-    private initHTML(display: I18nKeys, icon: string, size: ButtonSize) {
-        const image = svg({ icon });
+    private initHTML(display: I18nKeys, icon: string | undefined, size: ButtonSize) {
         this.className = size === ButtonSize.large ? style.normal : style.small;
-        image.classList.add(size === ButtonSize.large ? style.icon : style.smallIcon);
+        if (icon) {
+            const image = svg({ icon });
+            image.classList.add(size === ButtonSize.large ? style.icon : style.smallIcon);
+            this.append(image);
+        }
         const text = label({
             className: size === ButtonSize.large ? style.largeButtonText : style.smallButtonText,
             textContent: new Localize(display),
         });
         I18n.set(this, "title", display);
-        this.append(image, text);
+        this.append(text);
     }
 }
 

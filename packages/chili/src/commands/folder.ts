@@ -1,7 +1,7 @@
 // Part of the Chili3d Project, under the AGPL-3.0 License.
 // See LICENSE file in the project root for full license information.
 
-import { command, FolderNode, IApplication, ICommand } from "chili-core";
+import { command, GroupNode, IApplication, ICommand } from "chili-core";
 
 let index = 1;
 
@@ -12,7 +12,7 @@ let index = 1;
 export class NewFolder implements ICommand {
     async execute(app: IApplication): Promise<void> {
         const document = app.activeView?.document!;
-        const folder = new FolderNode(document, `Folder${index++}`);
+        const folder = new GroupNode(document, `Folder${index++}`);
         document.addNode(folder);
     }
 }

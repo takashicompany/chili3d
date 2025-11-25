@@ -35,6 +35,7 @@ export default {
         "command.convert.fuse": "Fundir",
         "command.create.revol": "Revolve",
         "command.convert.toFace": "Para Face",
+        "command.convert.eachToFace": "Cada Para Face",
         "command.convert.toShell": "Para Casca",
         "command.convert.toSolid": "Para Sólido",
         "command.convert.toWire": "Para Wireframe",
@@ -63,5 +64,8 @@ export default {
         "command.edit.undo": "Desfazer",
         "command.file.export": "Exportar",
         "command.file.import": "Importar",
+        "command.application.toggleShowFaceNormals": "Mostrar Normais da Face",
+        "command.modify.reverseFace": "Inverter Face",
+        "command.modify.showFaceNormals": "Mostrar Normais da Face",
     },
 } satisfies Locale;

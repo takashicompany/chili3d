@@ -11,7 +11,7 @@ export type CommandConstructor = new (...args: any[]) => ICommand;
 
 export interface CommandData {
     key: CommandKeys;
-    icon: string;
+    icon?: string;
     toggle?: Binding;
     helpText?: string;
     helpUrl?: string;
