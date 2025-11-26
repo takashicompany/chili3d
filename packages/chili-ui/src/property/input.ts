@@ -100,7 +100,14 @@ export class InputProperty extends PropertyBase {
     }
 
     private readonly handleBlur = (e: FocusEvent) => {
-        this.setValue(e.target as HTMLInputElement);
+        const input = e.target as HTMLInputElement;
+        // 複数オブジェクト選択時、Enterキーでプロパティ変更後にBindingがinput.valueを空文字に更新することがある。
+        // その状態でBlurイベントが発火すると、空文字が0に変換されてプロパティが0になってしまう。
+        // これを防ぐため、空文字の場合は何もしない。
+        if (input.value === "") {
+            return;
+        }
+        this.setValue(input);
     };
 
     private readonly handleKeyDown = (e: KeyboardEvent) => {
