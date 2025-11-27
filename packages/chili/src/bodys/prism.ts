@@ -38,4 +38,9 @@ export class PrismNode extends ParameterShapeNode {
         let vec = normal.multiply(this.length);
         return this.document.application.shapeFactory.prism(this.section, vec);
     }
+
+    override disposeInternal(): void {
+        super.disposeInternal();
+        this.section?.dispose();
+    }
 }
